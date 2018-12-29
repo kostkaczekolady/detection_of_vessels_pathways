@@ -27,13 +27,19 @@ def subtract_images(minuend, subtrahend):
                 subtracted_image[y][x] = new_pixel
     return subtracted_image
 
+# Take green channel from vessel image
 images_path = get_files_list(DRIVE_TRAIN_IMAGES)
 gc = get_green_channel(images_path[0])
 
+# Use 3 filtering techniques
 mean = cv2.blur(gc, (5,5))
 median = cv2.medianBlur(gc, 5)
 gaussian = cv2.GaussianBlur(gc, (5,5), 0)
 
+# Create difference image
+# DIMDF -  difference image based on median filter 
+# DIMNF - difference image based on mean filter 
+# DIGF - difference image based on Gaussian filter
 DIMDF = subtract_images(mean, gc)
 DIMNF = subtract_images(median, gc)
 DIGF = subtract_images(gaussian, gc)
