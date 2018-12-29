@@ -10,7 +10,7 @@ def get_files_list(path):
 
 def get_green_channel(img_path):
     img = cv2.imread(img_path)
-    b,g,r = cv2.split(img)
+    _,g,_ = cv2.split(img)
     return g
 
 
