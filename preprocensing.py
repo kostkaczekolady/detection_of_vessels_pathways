@@ -27,14 +27,29 @@ def subtract_images(minuend, subtrahend):
                 subtracted_image[y][x] = new_pixel
     return subtracted_image
 
+def normalize_image(image, max_value):
+    width = image.shape[1]
+    height = image.shape[0]
+    normalized_image = np.zeros((height,width,1), np.uint8)
+    factor = 255/max_value
+    for y in range(height):
+        for x in range(width):
+            normalized_image[y][x] = image[y][x] * factor
+    return normalize_image
+
 def combine_images(image1, image2):
     width = image1.shape[1]
     height = image1.shape[0]
     combined_image = np.zeros((height,width,1), np.uint8)
+    max_pix_value = 0
     for y in range(height):
         for x in range(width):
             new_pixel = image1[y][x] + image2[y][x]
+            if new_pixel > max_pix_value:
+                max_pix_value = new_pixel
             combined_image[y][x] = new_pixel
+    if max_pix_value > 255:
+        combined_image = normalize_image(combined_image, max_pix_value)
     return combined_image
 
 # Take green channel from vessel image
