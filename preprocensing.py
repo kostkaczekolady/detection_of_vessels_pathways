@@ -34,12 +34,16 @@ mean = cv2.blur(gc, (5,5))
 median = cv2.medianBlur(gc, 5)
 gaussian = cv2.GaussianBlur(gc, (5,5), 0)
 
-mean = cv2.blur(gc,(5,5))
-gaussian = cv2.GaussianBlur(gc, (5,5), 0)
-median = cv2.medianBlur(gc,5)
+DIMDF = subtract_images(mean, gc)
+DIMNF = subtract_images(median, gc)
+DIGF = subtract_images(gaussian, gc)
 
 cv2.imshow("image", gc);
 cv2.imshow("mean", mean);
 cv2.imshow("gaussian", gaussian);
 cv2.imshow("median", median);
+cv2.imshow("DIMDF", DIMDF);
+cv2.imshow("DIMNF", DIMNF);
+cv2.imshow("DIGF", DIGF);
 cv2.waitKey();
+cv2.destroyAllWindows()
