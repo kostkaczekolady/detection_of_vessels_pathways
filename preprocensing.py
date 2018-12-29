@@ -2,6 +2,7 @@ from os import listdir
 from os.path import isfile, join
 import cv2
 import numpy as np
+from sklearn import cluster
 
 DRIVE_TRAIN_IMAGES = './DRIVE/training/images/'
 DRIVE_TEST_IMAGES = './DRIVE/test/images/'
@@ -52,6 +53,17 @@ def combine_images(image1, image2):
         combined_image = normalize_image(combined_image, max_pix_value)
     return combined_image
 
+def cluster_image(image):
+    width = image.shape[1]
+    height = image.shape[0]
+    reshaped_image = image.reshape((width*height,1))
+    kmeans_cluster = cluster.KMeans(n_clusters=10)
+    kmeans_cluster.fit(reshaped_image)
+    cluster_centers = kmeans_cluster.cluster_centers_
+    cluster_labels = kmeans_cluster.labels_
+    clustered_img = cluster_centers[cluster_labels].reshape((image.shape))
+    clustered_img = np.uint8(clustered_img)
+    return clustered_img
 
 def main():
     # Take green channel from vessel image
