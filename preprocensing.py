@@ -30,6 +30,9 @@ def subtract_images(minuend, subtrahend):
 images_path = get_files_list(DRIVE_TRAIN_IMAGES)
 gc = get_green_channel(images_path[0])
 
+mean = cv2.blur(gc, (5,5))
+median = cv2.medianBlur(gc, 5)
+gaussian = cv2.GaussianBlur(gc, (5,5), 0)
 
 mean = cv2.blur(gc,(5,5))
 gaussian = cv2.GaussianBlur(gc, (5,5), 0)
