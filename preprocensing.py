@@ -17,7 +17,7 @@ def get_green_channel(img_path):
 def subtract_images(minuend, subtrahend):
     width = minuend.shape[1]
     height = minuend.shape[0]
-    subtracted_image = np.zeros((height,width,1), np.uint8)
+    subtracted_image = np.zeros((height,width), np.uint8)
     for y in range(height):
         for x in range(width):
             new_pixel = minuend[y][x] - subtrahend[y][x]
@@ -30,17 +30,17 @@ def subtract_images(minuend, subtrahend):
 def normalize_image(image, max_value):
     width = image.shape[1]
     height = image.shape[0]
-    normalized_image = np.zeros((height,width,1), np.uint8)
+    normalized_image = np.zeros((height,width), np.uint8)
     factor = 255/max_value
     for y in range(height):
         for x in range(width):
             normalized_image[y][x] = image[y][x] * factor
-    return normalize_image
+    return normalized_image
 
 def combine_images(image1, image2):
     width = image1.shape[1]
     height = image1.shape[0]
-    combined_image = np.zeros((height,width,1), np.uint8)
+    combined_image = np.zeros((height,width), np.uint8)
     max_pix_value = 0
     for y in range(height):
         for x in range(width):
