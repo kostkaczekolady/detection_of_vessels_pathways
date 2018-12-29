@@ -27,6 +27,16 @@ def subtract_images(minuend, subtrahend):
                 subtracted_image[y][x] = new_pixel
     return subtracted_image
 
+def combine_images(image1, image2):
+    width = image1.shape[1]
+    height = image1.shape[0]
+    combined_image = np.zeros((height,width,1), np.uint8)
+    for y in range(height):
+        for x in range(width):
+            new_pixel = image1[y][x] + image2[y][x]
+            combined_image[y][x] = new_pixel
+    return combined_image
+
 # Take green channel from vessel image
 images_path = get_files_list(DRIVE_TRAIN_IMAGES)
 gc = get_green_channel(images_path[0])
@@ -44,6 +54,13 @@ DIMDF = subtract_images(mean, gc)
 DIMNF = subtract_images(median, gc)
 DIGF = subtract_images(gaussian, gc)
 
+# DIMDMNF - combination of median filter and mean filter based difference images
+# DIMDGF - combination of median filter and Gaussian filter based difference images
+# DIMNGF - combination of mean filter and Gaussian filter based difference images
+DIMDMNF = combine_images(DIMDF, DIMNF)
+DIMDGF = combine_images(DIMDF, DIGF)
+DIMNGF = combine_images(DIMNF, DIGF)
+
 cv2.imshow("image", gc);
 cv2.imshow("mean", mean);
 cv2.imshow("gaussian", gaussian);
@@ -51,5 +68,8 @@ cv2.imshow("median", median);
 cv2.imshow("DIMDF", DIMDF);
 cv2.imshow("DIMNF", DIMNF);
 cv2.imshow("DIGF", DIGF);
+cv2.imshow("DIMDMNF", DIMDMNF);
+cv2.imshow("DIMDGF", DIMDGF);
+cv2.imshow("DIMNGF", DIMNGF);
 cv2.waitKey();
 cv2.destroyAllWindows()
