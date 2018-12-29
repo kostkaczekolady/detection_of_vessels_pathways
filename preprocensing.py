@@ -1,6 +1,7 @@
 from os import listdir
 from os.path import isfile, join
 import cv2
+import numpy as np
 
 DRIVE_TRAIN_IMAGES = './DRIVE/training/images/'
 DRIVE_TEST_IMAGES = './DRIVE/test/images/'
@@ -13,6 +14,18 @@ def get_green_channel(img_path):
     _,g,_ = cv2.split(img)
     return g
 
+def subtract_images(minuend, subtrahend):
+    width = minuend.shape[1]
+    height = minuend.shape[0]
+    subtracted_image = np.zeros((height,width,1), np.uint8)
+    for y in range(height):
+        for x in range(width):
+            new_pixel = minuend[y][x] - subtrahend[y][x]
+            if new_pixel < 0:
+                subtracted_image[y][x] = 0
+            else:
+                subtracted_image[y][x] = new_pixel
+    return subtracted_image
 
 images_path = get_files_list(DRIVE_TRAIN_IMAGES)
 gc = get_green_channel(images_path[0])
