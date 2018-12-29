@@ -52,39 +52,44 @@ def combine_images(image1, image2):
         combined_image = normalize_image(combined_image, max_pix_value)
     return combined_image
 
-# Take green channel from vessel image
-images_path = get_files_list(DRIVE_TRAIN_IMAGES)
-gc = get_green_channel(images_path[0])
 
-# Use 3 filtering techniques
-mean = cv2.blur(gc, (5,5))
-median = cv2.medianBlur(gc, 5)
-gaussian = cv2.GaussianBlur(gc, (5,5), 0)
+def main():
+    # Take green channel from vessel image
+    images_path = get_files_list(DRIVE_TRAIN_IMAGES)
+    gc = get_green_channel(images_path[0])
 
-# Create difference image
-# DIMDF -  difference image based on median filter 
-# DIMNF - difference image based on mean filter 
-# DIGF - difference image based on Gaussian filter
-DIMDF = subtract_images(mean, gc)
-DIMNF = subtract_images(median, gc)
-DIGF = subtract_images(gaussian, gc)
+    # Use 3 filtering techniques
+    mean = cv2.blur(gc, (5,5))
+    median = cv2.medianBlur(gc, 5)
+    gaussian = cv2.GaussianBlur(gc, (5,5), 0)
 
-# DIMDMNF - combination of median filter and mean filter based difference images
-# DIMDGF - combination of median filter and Gaussian filter based difference images
-# DIMNGF - combination of mean filter and Gaussian filter based difference images
-DIMDMNF = combine_images(DIMDF, DIMNF)
-DIMDGF = combine_images(DIMDF, DIGF)
-DIMNGF = combine_images(DIMNF, DIGF)
+    # Create difference image
+    # DIMDF -  difference image based on median filter 
+    # DIMNF - difference image based on mean filter 
+    # DIGF - difference image based on Gaussian filter
+    DIMDF = subtract_images(mean, gc)
+    DIMNF = subtract_images(median, gc)
+    DIGF = subtract_images(gaussian, gc)
 
-cv2.imshow("image", gc);
-cv2.imshow("mean", mean);
-cv2.imshow("gaussian", gaussian);
-cv2.imshow("median", median);
-cv2.imshow("DIMDF", DIMDF);
-cv2.imshow("DIMNF", DIMNF);
-cv2.imshow("DIGF", DIGF);
-cv2.imshow("DIMDMNF", DIMDMNF);
-cv2.imshow("DIMDGF", DIMDGF);
-cv2.imshow("DIMNGF", DIMNGF);
-cv2.waitKey();
-cv2.destroyAllWindows()
+    # DIMDMNF - combination of median filter and mean filter based difference images
+    # DIMDGF - combination of median filter and Gaussian filter based difference images
+    # DIMNGF - combination of mean filter and Gaussian filter based difference images
+    DIMDMNF = combine_images(DIMDF, DIMNF)
+    DIMDGF = combine_images(DIMDF, DIGF)
+    DIMNGF = combine_images(DIMNF, DIGF)
+
+    cv2.imshow("image", gc)
+    cv2.imshow("mean", mean)
+    cv2.imshow("gaussian", gaussian)
+    cv2.imshow("median", median)
+    cv2.imshow("DIMDF", DIMDF)
+    cv2.imshow("DIMNF", DIMNF)
+    cv2.imshow("DIGF", DIGF)
+    cv2.imshow("DIMDMNF", DIMDMNF)
+    cv2.imshow("DIMDGF", DIMDGF)
+    cv2.imshow("DIMNGF", DIMNGF)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
