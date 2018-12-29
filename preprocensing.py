@@ -71,9 +71,9 @@ def main():
     gc = get_green_channel(images_path[0])
 
     # Use 3 filtering techniques
-    mean = cv2.blur(gc, (5,5))
-    median = cv2.medianBlur(gc, 5)
-    gaussian = cv2.GaussianBlur(gc, (5,5), 0)
+    mean = cv2.blur(gc, (7,7))
+    median = cv2.medianBlur(gc, 11)
+    gaussian = cv2.GaussianBlur(gc, (7,7), 0)
 
     # Create difference image
     # DIMDF -  difference image based on median filter 
