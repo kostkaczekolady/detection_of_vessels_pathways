@@ -79,9 +79,9 @@ def main():
     # DIMDF -  difference image based on median filter 
     # DIMNF - difference image based on mean filter 
     # DIGF - difference image based on Gaussian filter
-    DIMDF = subtract_images(mean, gc)
-    DIMNF = subtract_images(median, gc)
-    DIGF = subtract_images(gaussian, gc)
+    DIMDF = subtract_images(gc, mean)
+    DIMNF = subtract_images(gc, median)
+    DIGF = subtract_images(gc, gaussian)
 
     # DIMDMNF - combination of median filter and mean filter based difference images
     # DIMDGF - combination of median filter and Gaussian filter based difference images
