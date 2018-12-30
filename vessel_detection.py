@@ -142,7 +142,7 @@ def main():
     for method in methods:
         create_csv_headers(method)
 
-    for image_path in images_path:
+    for idx, image_path in enumerate(images_path):
         ### PREPROCESSING ##
         # Take green channel from vessel image
         gc = get_green_channel(image_path)
@@ -193,6 +193,8 @@ def main():
         measure_performance(postprocess_DIMDMNF, image_path, 'DIMDMNF')
         measure_performance(postprocess_DIMDGF, image_path, 'DIMDGF')
         measure_performance(postprocess_DIMNGF, image_path, 'DIMNGF')
+
+        print('Progress {}/{}'.format(idx+1, len(images_path)))
 
 if __name__ == "__main__":
     main()
