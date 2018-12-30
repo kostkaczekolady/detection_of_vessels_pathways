@@ -99,8 +99,14 @@ def postprocess_image(image):
     erosion = cv2.erode(opening,kernel,iterations = 1)
     return erosion
 
+
+def save_result_to_csv(results, image_file_name, method):
+    with open('{}_result.csv'.format(method), 'a', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        csvwriter.writerow([image_file_name, results[0], results[1], results[2]])
+
 def measure_performance(image, image_path, method):
-    image_name = path_leaf(image_path)
+    image_name = get_file_name_from_path(image_path)
     manual_path = get_file_path_with_prefix(image_name[0:2], DRIVE_TEST_1T_MANUAL)[0]
     manual = cv2.imread(manual_path, flags=cv2.IMREAD_GRAYSCALE)
     width = manual.shape[1]
@@ -122,7 +128,7 @@ def measure_performance(image, image_path, method):
     sensitivity = TP/(TP + FN)
     specificity = TN/(TN + FP)
     accuracy = (TP + TN)/(TP + TN + FP + FN)
-    print('{} - sensitivity {}, specificity {}, accuracy {}'.format(method, sensitivity, specificity, accuracy))
+    save_result_to_csv((sensitivity, specificity, accuracy), image_name, method)
 
 def main():
     ### PREPROCESSING ##
