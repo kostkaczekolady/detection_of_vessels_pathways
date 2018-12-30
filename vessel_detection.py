@@ -18,12 +18,12 @@ def get_files_list(path):
 def get_file_path_with_prefix(prefix, path):
     return [join(path, f) for f in listdir(path) if isfile(join(path, f)) and f[0:2] == prefix]
 
-def path_leaf(path):
+def get_file_name_from_path(path):
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
 
 def apply_mask(img, img_path):
-    image_name = path_leaf(img_path)
+    image_name = get_file_name_from_path(img_path)
     mask_path = get_file_path_with_prefix(image_name[0:2], DRIVE_TEST_MASK)[0]
     mask = cv2.imread(mask_path, flags=cv2.IMREAD_GRAYSCALE)
     width = mask.shape[1]
