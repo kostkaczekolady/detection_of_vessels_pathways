@@ -9,6 +9,8 @@ import ntpath
 # DRIVE_TRAIN_MASK = './DRIVE/training/mask/'
 DRIVE_TEST_IMAGES = './DRIVE/test/images/'
 DRIVE_TEST_MASK = './DRIVE/test/mask/'
+DRIVE_TEST_1T_MANUAL = './DRIVE/test/1st_manual/'
+DRIVE_TEST_2nd_MANUAL = './DRIVE/test/2nd_manual/'
     
 def get_files_list(path):
     return [join(path, f) for f in listdir(path) if isfile(join(path, f))]
@@ -97,6 +99,31 @@ def postprocess_image(image):
     erosion = cv2.erode(opening,kernel,iterations = 1)
     return erosion
 
+def measure_performance(image, image_path, method):
+    image_name = path_leaf(image_path)
+    manual_path = get_file_path_with_prefix(image_name[0:2], DRIVE_TEST_1T_MANUAL)[0]
+    manual = cv2.imread(manual_path, flags=cv2.IMREAD_GRAYSCALE)
+    width = manual.shape[1]
+    height = manual.shape[0]
+    TP = 0 # True positive
+    FP = 0 # False positive
+    TN = 0 # True negative
+    FN = 0 # False negative
+    for y in range(height):
+        for x in range(width):
+            if image[y][x] == 0 and manual[y][x] == 0:
+                TN += 1
+            elif image[y][x] >= 1 and manual[y][x] >= 1:
+                TP += 1
+            elif image[y][x] == 0 and manual[y][x] >= 1:
+                FN += 1
+            elif image[y][x] >= 1 and manual[y][x] == 0:
+                FP += 1
+    sensitivity = TP/(TP + FN)
+    specificity = TN/(TN + FP)
+    accuracy = (TP + TN)/(TP + TN + FP + FN)
+    print('{} - sensitivity {}, specificity {}, accuracy {}'.format(method, sensitivity, specificity, accuracy))
+
 def main():
     ### PREPROCESSING ##
     # Take green channel from vessel image
@@ -126,6 +153,13 @@ def main():
     ### CLUSTERING ###
     # Cluster all images
     cluster_DIMDF = cluster_image(DIMDF)
+    cluster_DIMNF = cluster_image(DIMNF)
+    cluster_DIGF = cluster_image(DIGF)
+    cluster_DIMDMNF = cluster_image(DIMDMNF)
+    cluster_DIMDGF = cluster_image(DIMDGF)
+    cluster_DIMNGF = cluster_image(DIMNGF)
+
+
     ### POSTPROCESSING ###
     postprocess_DIMDF = postprocess_image(cluster_DIMDF)
     postprocess_DIMNF = postprocess_image(cluster_DIMNF)
@@ -134,24 +168,14 @@ def main():
     postprocess_DIMDGF = postprocess_image(cluster_DIMDGF)
     postprocess_DIMNGF = postprocess_image(cluster_DIMNGF)
 
-    cv2.imshow("image", gc)
-    cv2.imshow("mean", mean)
-    cv2.imshow("gaussian", gaussian)
-    cv2.imshow("median", median)
-    cv2.imshow("DIMDF", DIMDF)
-    cv2.imshow("DIMNF", DIMNF)
-    cv2.imshow("DIGF", DIGF)
-    cv2.imshow("DIMDMNF", DIMDMNF)
-    cv2.imshow("DIMDGF", DIMDGF)
-    cv2.imshow("DIMNGF", DIMNGF)
-    cv2.imshow("cluster_DIMDF", cluster_DIMDF)
-    cv2.imshow("cluster_DIMNF", cluster_DIMNF)
-    cv2.imshow("cluster_DIGF", cluster_DIGF)
-    cv2.imshow("cluster_DIMDMNF", cluster_DIMDMNF)
-    cv2.imshow("cluster_DIMDGF", cluster_DIMDGF)
-    cv2.imshow("cluster_DIMNGF", cluster_DIMNGF)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
+
+    ### PERFORMANCE ###
+    measure_performance(postprocess_DIMDF, images_path[0], 'DIMDF')
+    measure_performance(postprocess_DIMNF, images_path[0], 'DIMNF')
+    measure_performance(postprocess_DIGF, images_path[0], 'DIGF')
+    measure_performance(postprocess_DIMDMNF, images_path[0], 'DIMDMNF')
+    measure_performance(postprocess_DIMDGF, images_path[0], 'DIMDGF')
+    measure_performance(postprocess_DIMNGF, images_path[0], 'DIMNGF')
 
 if __name__ == "__main__":
     main()
