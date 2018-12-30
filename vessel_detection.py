@@ -99,6 +99,10 @@ def postprocess_image(image):
     erosion = cv2.erode(opening,kernel,iterations = 1)
     return erosion
 
+def create_csv_headers(method):
+    with open('{}_result.csv'.format(method), 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        csvwriter.writerow(['File', 'Sensitivity', 'Specificity', 'Accuracy'])
 
 def save_result_to_csv(results, image_file_name, method):
     with open('{}_result.csv'.format(method), 'a', newline='') as csvfile:
@@ -134,6 +138,10 @@ def main():
     ### PREPROCESSING ##
     # Take green channel from vessel image
     images_path = get_files_list(DRIVE_TEST_IMAGES)
+    methods = ('DIMDF', 'DIMNF', 'DIGF', 'DIMDMNF', 'DIMDGF', 'DIMNGF')
+    for method in methods:
+        create_csv_headers(method)
+
     gc = get_green_channel(images_path[0])
 
     # Use 3 filtering techniques
