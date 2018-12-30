@@ -67,11 +67,11 @@ def cluster_image(image):
 
 def main():
     # Take green channel from vessel image
-    images_path = get_files_list(DRIVE_TRAIN_IMAGES)
+    images_path = get_files_list(DRIVE_TEST_IMAGES)
     gc = get_green_channel(images_path[0])
 
     # Use 3 filtering techniques
-    mean = cv2.blur(gc, (7,7))
+    mean = cv2.blur(gc, (11,11))
     median = cv2.medianBlur(gc, 11)
     gaussian = cv2.GaussianBlur(gc, (7,7), 0)
 
