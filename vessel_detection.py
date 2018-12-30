@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 from sklearn import cluster
 import ntpath
+import csv
+
 
 # DRIVE_TRAIN_IMAGES = './DRIVE/training/images/'
 # DRIVE_TRAIN_MASK = './DRIVE/training/mask/'
@@ -135,61 +137,62 @@ def measure_performance(image, image_path, method):
     save_result_to_csv((sensitivity, specificity, accuracy), image_name, method)
 
 def main():
-    ### PREPROCESSING ##
-    # Take green channel from vessel image
     images_path = get_files_list(DRIVE_TEST_IMAGES)
     methods = ('DIMDF', 'DIMNF', 'DIGF', 'DIMDMNF', 'DIMDGF', 'DIMNGF')
     for method in methods:
         create_csv_headers(method)
 
-    gc = get_green_channel(images_path[0])
+    for image_path in images_path:
+        ### PREPROCESSING ##
+        # Take green channel from vessel image
+        gc = get_green_channel(image_path)
 
-    # Use 3 filtering techniques
-    mean = cv2.blur(gc, (11,11))
-    median = cv2.medianBlur(gc, 15)
-    gaussian = cv2.GaussianBlur(gc, (11,11), 0)
+        # Use 3 filtering techniques
+        mean = cv2.blur(gc, (11,11))
+        median = cv2.medianBlur(gc, 15)
+        gaussian = cv2.GaussianBlur(gc, (11,11), 0)
 
-    # Create difference image
-    # DIMDF -  difference image based on median filter 
-    # DIMNF - difference image based on mean filter 
-    # DIGF - difference image based on Gaussian filter
-    DIMDF = subtract_images(gc, mean)
-    DIMNF = subtract_images(gc, median)
-    DIGF = subtract_images(gc, gaussian)
+        # Create difference image
+        # DIMDF -  difference image based on median filter 
+        # DIMNF - difference image based on mean filter 
+        # DIGF - difference image based on Gaussian filter
+        DIMDF = subtract_images(gc, mean)
+        DIMNF = subtract_images(gc, median)
+        DIGF = subtract_images(gc, gaussian)
 
-    # DIMDMNF - combination of median filter and mean filter based difference images
-    # DIMDGF - combination of median filter and Gaussian filter based difference images
-    # DIMNGF - combination of mean filter and Gaussian filter based difference images
-    DIMDMNF = combine_images(DIMDF, DIMNF)
-    DIMDGF = combine_images(DIMDF, DIGF)
-    DIMNGF = combine_images(DIMNF, DIGF)
+        # DIMDMNF - combination of median filter and mean filter based difference images
+        # DIMDGF - combination of median filter and Gaussian filter based difference images
+        # DIMNGF - combination of mean filter and Gaussian filter based difference images
+        DIMDMNF = combine_images(DIMDF, DIMNF)
+        DIMDGF = combine_images(DIMDF, DIGF)
+        DIMNGF = combine_images(DIMNF, DIGF)
 
-    ### CLUSTERING ###
-    # Cluster all images
-    cluster_DIMDF = cluster_image(DIMDF)
-    cluster_DIMNF = cluster_image(DIMNF)
-    cluster_DIGF = cluster_image(DIGF)
-    cluster_DIMDMNF = cluster_image(DIMDMNF)
-    cluster_DIMDGF = cluster_image(DIMDGF)
-    cluster_DIMNGF = cluster_image(DIMNGF)
-
-
-    ### POSTPROCESSING ###
-    postprocess_DIMDF = postprocess_image(cluster_DIMDF)
-    postprocess_DIMNF = postprocess_image(cluster_DIMNF)
-    postprocess_DIGF = postprocess_image(cluster_DIGF)
-    postprocess_DIMDMNF = postprocess_image(cluster_DIMDMNF)
-    postprocess_DIMDGF = postprocess_image(cluster_DIMDGF)
-    postprocess_DIMNGF = postprocess_image(cluster_DIMNGF)
+        ### CLUSTERING ###
+        # Cluster all images
+        cluster_DIMDF = cluster_image(DIMDF)
+        cluster_DIMNF = cluster_image(DIMNF)
+        cluster_DIGF = cluster_image(DIGF)
+        cluster_DIMDMNF = cluster_image(DIMDMNF)
+        cluster_DIMDGF = cluster_image(DIMDGF)
+        cluster_DIMNGF = cluster_image(DIMNGF)
 
 
-    ### PERFORMANCE ###
-    measure_performance(postprocess_DIMDF, images_path[0], 'DIMDF')
-    measure_performance(postprocess_DIMNF, images_path[0], 'DIMNF')
-    measure_performance(postprocess_DIGF, images_path[0], 'DIGF')
-    measure_performance(postprocess_DIMDMNF, images_path[0], 'DIMDMNF')
-    measure_performance(postprocess_DIMDGF, images_path[0], 'DIMDGF')
-    measure_performance(postprocess_DIMNGF, images_path[0], 'DIMNGF')
+        ### POSTPROCESSING ###
+        postprocess_DIMDF = postprocess_image(cluster_DIMDF)
+        postprocess_DIMNF = postprocess_image(cluster_DIMNF)
+        postprocess_DIGF = postprocess_image(cluster_DIGF)
+        postprocess_DIMDMNF = postprocess_image(cluster_DIMDMNF)
+        postprocess_DIMDGF = postprocess_image(cluster_DIMDGF)
+        postprocess_DIMNGF = postprocess_image(cluster_DIMNGF)
+
+
+        ### PERFORMANCE ###
+        measure_performance(postprocess_DIMDF, image_path, 'DIMDF')
+        measure_performance(postprocess_DIMNF, image_path, 'DIMNF')
+        measure_performance(postprocess_DIGF, image_path, 'DIGF')
+        measure_performance(postprocess_DIMDMNF, image_path, 'DIMDMNF')
+        measure_performance(postprocess_DIMDGF, image_path, 'DIMDGF')
+        measure_performance(postprocess_DIMNGF, image_path, 'DIMNGF')
 
 if __name__ == "__main__":
     main()
