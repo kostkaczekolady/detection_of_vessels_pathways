@@ -90,7 +90,15 @@ def cluster_image(image):
     clustered_img = np.uint8(clustered_img)
     return clustered_img
 
+def postprocess_image(image):
+    median_filtred_img = cv2.medianBlur(image, 3)
+    kernel = np.ones((3,3),np.uint8)
+    opening = cv2.morphologyEx(median_filtred_img, cv2.MORPH_OPEN, kernel)
+    erosion = cv2.erode(opening,kernel,iterations = 1)
+    return erosion
+
 def main():
+    ### PREPROCESSING ##
     # Take green channel from vessel image
     images_path = get_files_list(DRIVE_TEST_IMAGES)
     gc = get_green_channel(images_path[0])
@@ -115,13 +123,16 @@ def main():
     DIMDGF = combine_images(DIMDF, DIGF)
     DIMNGF = combine_images(DIMNF, DIGF)
 
+    ### CLUSTERING ###
     # Cluster all images
     cluster_DIMDF = cluster_image(DIMDF)
-    cluster_DIMNF = cluster_image(DIMNF)
-    cluster_DIGF = cluster_image(DIGF)
-    cluster_DIMDMNF = cluster_image(DIMDMNF)
-    cluster_DIMDGF = cluster_image(DIMDGF)
-    cluster_DIMNGF = cluster_image(DIMNGF)
+    ### POSTPROCESSING ###
+    postprocess_DIMDF = postprocess_image(cluster_DIMDF)
+    postprocess_DIMNF = postprocess_image(cluster_DIMNF)
+    postprocess_DIGF = postprocess_image(cluster_DIGF)
+    postprocess_DIMDMNF = postprocess_image(cluster_DIMDMNF)
+    postprocess_DIMDGF = postprocess_image(cluster_DIMDGF)
+    postprocess_DIMNGF = postprocess_image(cluster_DIMNGF)
 
     cv2.imshow("image", gc)
     cv2.imshow("mean", mean)
