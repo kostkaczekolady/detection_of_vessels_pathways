@@ -109,7 +109,7 @@ def create_csv_headers(method):
 def save_result_to_csv(results, image_file_name, method):
     with open('{}_result.csv'.format(method), 'a', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        csvwriter.writerow([image_file_name, results[0], results[1], results[2], results[4], results[5], results[6], results[7]])
+        csvwriter.writerow([image_file_name, results[0], results[1], results[2], results[3], results[4], results[5], results[6]])
 
 def measure_performance(image, image_path, method):
     image_name = get_file_name_from_path(image_path)
