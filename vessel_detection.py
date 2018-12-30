@@ -3,16 +3,41 @@ from os.path import isfile, join
 import cv2
 import numpy as np
 from sklearn import cluster
+import ntpath
 
-DRIVE_TRAIN_IMAGES = './DRIVE/training/images/'
+# DRIVE_TRAIN_IMAGES = './DRIVE/training/images/'
+# DRIVE_TRAIN_MASK = './DRIVE/training/mask/'
 DRIVE_TEST_IMAGES = './DRIVE/test/images/'
+DRIVE_TEST_MASK = './DRIVE/test/mask/'
     
 def get_files_list(path):
     return [join(path, f) for f in listdir(path) if isfile(join(path, f))]
 
+def get_file_path_with_prefix(prefix, path):
+    return [join(path, f) for f in listdir(path) if isfile(join(path, f)) and f[0:2] == prefix]
+
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
+
+def apply_mask(img, img_path):
+    image_name = path_leaf(img_path)
+    mask_path = get_file_path_with_prefix(image_name[0:2], DRIVE_TEST_MASK)[0]
+    mask = cv2.imread(mask_path, flags=cv2.IMREAD_GRAYSCALE)
+    width = mask.shape[1]
+    height = mask.shape[0]
+    for y in range(height):
+        for x in range(width):
+            if mask[y][x] != 0:
+                new_pixel = img[y][x]
+            else:
+                new_pixel = 0
+            img[y][x] = new_pixel
+
 def get_green_channel(img_path):
     img = cv2.imread(img_path)
     _,g,_ = cv2.split(img)
+    apply_mask(g, img_path)
     return g
 
 def subtract_images(minuend, subtrahend):
