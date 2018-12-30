@@ -132,8 +132,8 @@ def main():
 
     # Use 3 filtering techniques
     mean = cv2.blur(gc, (11,11))
-    median = cv2.medianBlur(gc, 11)
-    gaussian = cv2.GaussianBlur(gc, (7,7), 0)
+    median = cv2.medianBlur(gc, 15)
+    gaussian = cv2.GaussianBlur(gc, (11,11), 0)
 
     # Create difference image
     # DIMDF -  difference image based on median filter 
