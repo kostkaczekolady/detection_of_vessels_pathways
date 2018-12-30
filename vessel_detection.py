@@ -104,12 +104,12 @@ def postprocess_image(image):
 def create_csv_headers(method):
     with open('{}_result.csv'.format(method), 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        csvwriter.writerow(['File', 'Sensitivity', 'Specificity', 'Accuracy'])
+        csvwriter.writerow(['File', 'Sensitivity', 'Specificity', 'Accuracy', 'TP', 'FP', 'TN', 'FN'])
 
 def save_result_to_csv(results, image_file_name, method):
     with open('{}_result.csv'.format(method), 'a', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        csvwriter.writerow([image_file_name, results[0], results[1], results[2]])
+        csvwriter.writerow([image_file_name, results[0], results[1], results[2], results[4], results[5], results[6], results[7]])
 
 def measure_performance(image, image_path, method):
     image_name = get_file_name_from_path(image_path)
@@ -134,7 +134,7 @@ def measure_performance(image, image_path, method):
     sensitivity = TP/(TP + FN)
     specificity = TN/(TN + FP)
     accuracy = (TP + TN)/(TP + TN + FP + FN)
-    save_result_to_csv((sensitivity, specificity, accuracy), image_name, method)
+    save_result_to_csv((sensitivity, specificity, accuracy, TP, FP, TN, FN), image_name, method)
 
 def main():
     images_path = get_files_list(DRIVE_TEST_IMAGES)
