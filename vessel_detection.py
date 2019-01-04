@@ -28,8 +28,7 @@ def apply_mask(img, img_path):
     image_name = get_file_name_from_path(img_path)
     mask_path = get_file_path_with_prefix(image_name[0:2], DRIVE_TEST_MASK)[0]
     mask = cv2.imread(mask_path, flags=cv2.IMREAD_GRAYSCALE)
-    width = mask.shape[1]
-    height = mask.shape[0]
+    height, width = mask.shape
     for y in range(height):
         for x in range(width):
             if mask[y][x] != 0:
@@ -45,8 +44,7 @@ def get_green_channel(img_path):
     return g
 
 def subtract_images(minuend, subtrahend):
-    width = minuend.shape[1]
-    height = minuend.shape[0]
+    height, width = minuend.shape
     subtracted_image = np.zeros((height,width), np.uint8)
     for y in range(height):
         for x in range(width):
@@ -57,9 +55,7 @@ def subtract_images(minuend, subtrahend):
                 subtracted_image[y][x] = new_pixel
     return subtracted_image
 
-def normalize_image(image, max_value):
-    width = image.shape[1]
-    height = image.shape[0]
+    height, width = image.shape
     normalized_image = np.zeros((height,width), np.uint8)
     factor = 255/max_value
     for y in range(height):
@@ -68,8 +64,7 @@ def normalize_image(image, max_value):
     return normalized_image
 
 def combine_images(image1, image2):
-    width = image1.shape[1]
-    height = image1.shape[0]
+    height, width = image1.shape
     combined_image = np.zeros((height,width), np.uint8)
     max_pix_value = 0
     for y in range(height):
@@ -83,8 +78,7 @@ def combine_images(image1, image2):
     return combined_image
 
 def cluster_image(image):
-    width = image.shape[1]
-    height = image.shape[0]
+    height, width = image.shape
     reshaped_image = image.reshape((width*height,1))
     kmeans_cluster = cluster.KMeans(n_clusters=10)
     kmeans_cluster.fit(reshaped_image)
@@ -115,8 +109,7 @@ def measure_performance(image, image_path, method):
     image_name = get_file_name_from_path(image_path)
     manual_path = get_file_path_with_prefix(image_name[0:2], DRIVE_TEST_1T_MANUAL)[0]
     manual = cv2.imread(manual_path, flags=cv2.IMREAD_GRAYSCALE)
-    width = manual.shape[1]
-    height = manual.shape[0]
+    height, width = manual.shape
     TP = 0 # True positive
     FP = 0 # False positive
     TN = 0 # True negative
