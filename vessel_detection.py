@@ -157,6 +157,10 @@ def main():
         median = cv2.medianBlur(gc, 15)
         gaussian = cv2.GaussianBlur(gc, (11,11), 0)
 
+        apply_mask(mean, image_path)
+        apply_mask(median, image_path)
+        apply_mask(gaussian, image_path)
+
         # Create difference image
         # DIMDF -  difference image based on median filter 
         # DIMNF - difference image based on mean filter 
