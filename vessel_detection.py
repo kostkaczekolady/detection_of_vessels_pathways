@@ -31,7 +31,7 @@ def apply_mask(img, img_path):
     height, width = mask.shape
     for y in range(height):
         for x in range(width):
-            if mask[y][x] != 0:
+            if mask[y][x] == 255:
                 new_pixel = img[y][x]
             else:
                 new_pixel = 0
