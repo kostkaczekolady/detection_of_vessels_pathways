@@ -107,6 +107,17 @@ def postprocess_image(image):
     erosion = cv2.erode(opening,kernel,iterations = 1)
     return erosion
 
+def binarize_image(img):
+    height, width = img.shape
+    binarized_image = np.zeros((height,width), np.uint8)
+    max_pix = get_max_pix_value(img)
+    threshold = max_pix * 0.1
+    for y in range(height):
+        for x in range(width):
+            if img[y][x] > threshold:
+                binarized_image[y][x] = 255
+    return binarized_image
+
 def create_csv_headers(method):
     with open('{}_result.csv'.format(method), 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -187,13 +198,19 @@ def main():
 
 
         ### POSTPROCESSING ###
-        postprocess_DIMDF = postprocess_image(cluster_DIMDF)
-        postprocess_DIMNF = postprocess_image(cluster_DIMNF)
-        postprocess_DIGF = postprocess_image(cluster_DIGF)
-        postprocess_DIMDMNF = postprocess_image(cluster_DIMDMNF)
-        postprocess_DIMDGF = postprocess_image(cluster_DIMDGF)
-        postprocess_DIMNGF = postprocess_image(cluster_DIMNGF)
+        binarize_DIMDF = binarize_image(cluster_DIMDF)
+        binarize_DIMNF = binarize_image(cluster_DIMNF)
+        binarize_DIGF = binarize_image(cluster_DIGF)
+        binarize_DIMDMNF = binarize_image(cluster_DIMDMNF)
+        binarize_DIMDGF = binarize_image(cluster_DIMDGF)
+        binarize_DIMNGF = binarize_image(cluster_DIMNGF)
 
+        postprocess_DIMDF = postprocess_image(binarize_DIMDF)
+        postprocess_DIMNF = postprocess_image(binarize_DIMNF)
+        postprocess_DIGF = postprocess_image(binarize_DIGF)
+        postprocess_DIMDMNF = postprocess_image(binarize_DIMDMNF)
+        postprocess_DIMDGF = postprocess_image(binarize_DIMDGF)
+        postprocess_DIMNGF = postprocess_image(binarize_DIMNGF)
 
         ### PERFORMANCE ###
         measure_performance(postprocess_DIMDF, image_path, 'DIMDF')
