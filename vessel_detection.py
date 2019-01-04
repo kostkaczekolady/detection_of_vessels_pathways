@@ -102,10 +102,9 @@ def cluster_image(image):
 
 def postprocess_image(image):
     median_filtred_img = cv2.medianBlur(image, 3)
-    kernel = np.ones((3,3),np.uint8)
-    opening = cv2.morphologyEx(median_filtred_img, cv2.MORPH_OPEN, kernel)
-    erosion = cv2.erode(opening,kernel,iterations = 1)
-    return erosion
+    # kernel = np.ones((2,2),np.uint8)
+    # opening = cv2.morphologyEx(median_filtred_img, cv2.MORPH_OPEN, kernel)
+    return median_filtred_img
 
 def binarize_image(img):
     height, width = img.shape
