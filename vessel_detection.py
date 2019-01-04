@@ -81,7 +81,7 @@ def combine_images(image1, image2):
     max_pix_value = 0
     for y in range(height):
         for x in range(width):
-            new_pixel = image1[y][x] + image2[y][x]
+            new_pixel = int(image1[y][x]) + int(image2[y][x])
             if new_pixel > max_pix_value:
                 max_pix_value = new_pixel
             combined_image[y][x] = new_pixel
