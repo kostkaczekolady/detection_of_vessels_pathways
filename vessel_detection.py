@@ -55,6 +55,18 @@ def subtract_images(minuend, subtrahend):
                 subtracted_image[y][x] = new_pixel
     return subtracted_image
 
+def get_max_pix_value(image):
+    height, width = image.shape
+    max_value = 0
+    for y in range(height):
+        for x in range(width):
+            if image[y][x] > max_value:
+                max_value = image[y][x]
+    return max_value
+
+def normalize_image(image, max_value=None):
+    if not max_value:
+        max_value = get_max_pix_value(image)
     height, width = image.shape
     normalized_image = np.zeros((height,width), np.uint8)
     factor = 255/max_value
