@@ -48,7 +48,7 @@ def subtract_images(minuend, subtrahend):
     subtracted_image = np.zeros((height,width), np.uint8)
     for y in range(height):
         for x in range(width):
-            new_pixel = minuend[y][x] - subtrahend[y][x]
+            new_pixel = int(minuend[y][x]) - int(subtrahend[y][x])
             if new_pixel < 0 or new_pixel > 255:
                 subtracted_image[y][x] = 0
             else:
